@@ -24,11 +24,11 @@
 - На каждом шаге выполняется одно случайное событие; логи выводятся в консоль.
 
 Как запустить (Bash):
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install pytest
-pytest -q
+- python -m venv .venv
+- source .venv/bin/activate
+- python -m pip install -U pip
+- python -m pip install pytest
+- pytest -q
 
 Пример запуска симуляции вручную:
 python -c "from src.casino_game import run_simulation; run_simulation(steps=10, seed=123)"
