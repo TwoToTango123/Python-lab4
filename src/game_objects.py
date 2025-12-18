@@ -61,6 +61,7 @@ class WarGoose(Goose):
         max_steal_amount = random.randint(1, max(1, victim_player.balance // 4))
         amount_stolen = min(max_steal_amount, victim_player.balance)
         victim_player.withdraw(amount_stolen)
+        casino.balances[victim_player.name] = victim_player.balance
         casino.balances.change_balance(self.name, amount_stolen)
 
 class HonkGoose(Goose):
@@ -72,7 +73,9 @@ class HonkGoose(Goose):
             if balance_change < 0:
                 loss_amount = min(current_player.balance, -balance_change)
                 current_player.withdraw(loss_amount)
+                casino.balances[current_player.name] = current_player.balance
                 casino.balances.change_balance(self.name, loss_amount)
             else:
                 current_player.deposit(balance_change)
+                casino.balances[current_player.name] = current_player.balance
                 casino.balances.change_balance(self.name, -balance_change)

@@ -47,6 +47,7 @@ class Casino:
             return
         bet_amount = random.randint(1, 10)
         if current_player.withdraw(bet_amount):
+            self.balances[current_player.name] = current_player.balance
             self.balances.change_balance('house', bet_amount)
 
     def _player_win(self) -> None:
@@ -55,6 +56,7 @@ class Casino:
             return
         win_amount = random.randint(1, 20)
         current_player.deposit(win_amount)
+        self.balances[current_player.name] = current_player.balance
         self.balances.change_balance('house', -win_amount)
 
     def _wargoose_attack(self) -> None:
@@ -74,6 +76,7 @@ class Casino:
             return
         amount_to_steal = random.randint(1, min(10, target_player.balance)) if target_player.balance > 0 else 0
         target_player.withdraw(amount_to_steal)
+        self.balances[target_player.name] = target_player.balance
         self.balances.change_balance(random_goose.name, amount_to_steal)
 
     def _merge_geese(self) -> None:
@@ -92,6 +95,7 @@ class Casino:
             return
         loss_amount = panicked_player.balance
         panicked_player.withdraw(loss_amount)
+        self.balances[panicked_player.name] = panicked_player.balance
         self.balances.change_balance('house', loss_amount)
 
 
