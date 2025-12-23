@@ -49,6 +49,7 @@ class Casino:
         if current_player.withdraw(bet_amount):
             self.balances[current_player.name] = current_player.balance
             self.balances.change_balance('house', bet_amount)
+            print(f"{current_player.name} делает ставку {bet_amount} (баланс: {current_player.balance})")
 
     def _player_win(self) -> None:
         current_player = self._choose_random_player()
@@ -58,15 +59,18 @@ class Casino:
         current_player.deposit(win_amount)
         self.balances[current_player.name] = current_player.balance
         self.balances.change_balance('house', -win_amount)
+        print(f"{current_player.name} выигрывает {win_amount}! (баланс: {current_player.balance})")
 
     def _wargoose_attack(self) -> None:
         random_goose = self._get_random_goose_from_collection()
         if isinstance(random_goose, WarGoose):
+            print(f"Гусь {random_goose.name} атакует!")
             random_goose.interact(self)
 
     def _honk_goose_honk(self) -> None:
         random_goose = self._get_random_goose_from_collection()
         if isinstance(random_goose, HonkGoose):
+            print(f"Гусь {random_goose.name} издает мощный крик! (громкость: {random_goose.honk_volume})")
             random_goose.honk(self)
 
     def _goose_steal(self) -> None:
@@ -75,9 +79,11 @@ class Casino:
         if not random_goose or not target_player:
             return
         amount_to_steal = random.randint(1, min(10, target_player.balance)) if target_player.balance > 0 else 0
-        target_player.withdraw(amount_to_steal)
-        self.balances[target_player.name] = target_player.balance
-        self.balances.change_balance(random_goose.name, amount_to_steal)
+        if amount_to_steal > 0:
+            target_player.withdraw(amount_to_steal)
+            self.balances[target_player.name] = target_player.balance
+            self.balances.change_balance(random_goose.name, amount_to_steal)
+            print(f"Гусь {random_goose.name} крадет {amount_to_steal} у {target_player.name}")
 
     def _merge_geese(self) -> None:
         if len(self.geese) < 2:
@@ -88,15 +94,18 @@ class Casino:
             return
         merged_goose = first_goose + second_goose
         self.geese.add(merged_goose)
+        print(f"Гуси {first_goose.name} и {second_goose.name} объединились в {merged_goose.name}!")
 
     def _panic_loss(self) -> None:
         panicked_player = self._choose_random_player()
         if not panicked_player:
             return
         loss_amount = panicked_player.balance
-        panicked_player.withdraw(loss_amount)
-        self.balances[panicked_player.name] = panicked_player.balance
-        self.balances.change_balance('house', loss_amount)
+        if loss_amount > 0:
+            panicked_player.withdraw(loss_amount)
+            self.balances[panicked_player.name] = panicked_player.balance
+            self.balances.change_balance('house', loss_amount)
+            print(f"{panicked_player.name} паникует и теряет все {loss_amount}!")
 
 
 def run_simulation(steps: int = 20, seed: Optional[int] = None) -> None:
@@ -119,5 +128,19 @@ def run_simulation(steps: int = 20, seed: Optional[int] = None) -> None:
     casino.register_goose(g1)
     casino.register_goose(g2)
 
+    print(f"\nНачальные балансы:")
+    for player in casino.players:
+        print(f"   {player.name}: {player.balance}")
+    print()
+    
     for i in range(steps):
+        print(f"\n--- Шаг {i + 1} ---")
         casino.step()
+    
+    print(f"\nФинальные балансы:")
+    for player in casino.players:
+        print(f"   {player.name}: {player.balance}")
+    print(f"\nСтатистика гусей:")
+    for goose in casino.geese:
+        goose_balance = casino.balances.get(goose.name, 0)
+        print(f"   {goose.name}: {goose_balance}")

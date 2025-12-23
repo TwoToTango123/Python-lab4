@@ -1,11 +1,34 @@
 # Лабораторная работа №4 — Вариант: «Казино и Гуси»
+
 Реализация учебной симуляции казино с пользовательскими коллекциями и псевдослучайной моделью.
 
-Ключевые папки:
-- src/ - основная реализация предметной модели и симуляции.
-- tests/ - базовые unit-тесты и запуск короткой детерминированной симуляции.
+## Быстрый старт
 
-Краткое описание предметной модели в src/:
+```bash
+# 1. Создать и активировать виртуальное окружение
+python -m venv .venv
+source .venv/bin/activate
+
+# 2. Запустить программу
+python -m src.main
+
+# 3. Или с параметрами
+python -m src.main --steps 50 --seed 123
+```
+
+Для получения справки: `python -m src.main --help`  
+
+## Структура проекта
+
+Ключевые папки:
+- **src/** - основная реализация предметной модели и симуляции
+  - `main.py` - точка входа для запуска программы
+  - `casino_game.py` - класс Casino и функция run_simulation
+  - `game_objects.py` - классы Player, Chip, Goose, WarGoose, HonkGoose
+  - `collections.py` - коллекции PlayerCollection, GooseCollection, CasinoBalance
+- **tests/** - базовые unit-тесты и запуск короткой детерминированной симуляции
+
+## Описание предметной модели
 - Player - игрок с полем balance и методами deposit/withdraw.
 - Chip - фишка казино с реализованным __add__ (сложение фишек).
 - Goose - базовый гусь; два подкласса:
@@ -23,12 +46,14 @@
 - Симуляция использует random и при заданном seed воспроизводима.
 - На каждом шаге выполняется одно случайное событие; логи выводятся в консоль.
 
-Как запустить (Bash):
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install pytest
+## Запуск тестов
+```bash
+# Быстрый запуск всех тестов
 pytest -q
 
-Пример запуска симуляции вручную:
-python -c "from src.casino_game import run_simulation; run_simulation(steps=10, seed=123)"
+# Подробный вывод
+pytest -v
+
+# Запуск конкретного теста
+pytest tests/test_casino_game.py -v
+```
